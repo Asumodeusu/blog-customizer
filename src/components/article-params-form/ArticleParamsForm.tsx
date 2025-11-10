@@ -15,6 +15,7 @@ import {
 	fontColors,
 	backgroundColors,
 	contentWidthArr,
+	defaultArticleState,
 	fontSizeOptions,
 } from 'src/constants/articleProps';
 
@@ -23,6 +24,17 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 	const formRef = useRef<HTMLDivElement>(null);
 	const handleFormToggle = () => setIsFormVisible((prevState) => !prevState);
 	const [tempForm, setTempForm] = useState(props.nowForm);
+
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		props.onApplyForm(tempForm);
+		setIsFormVisible(false);
+	};
+
+	const handleReset = () => {
+		setTempForm(defaultArticleState);
+		props.onResetForm();
+	};
 
 	useOutsideClickClose({
 		isOpen: isFormVisible,
@@ -41,13 +53,7 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 						isFormVisible && styles.container_open
 					)}
 					ref={formRef}>
-					<form
-						className={styles.form}
-						onSubmit={(e) => {
-							e.preventDefault();
-							props.onApplyForm(tempForm);
-							setIsFormVisible(false);
-						}}>
+					<form className={styles.form} onSubmit={handleSubmit}>
 						<Text
 							as='h2'
 							size={31}
@@ -118,20 +124,9 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 								title='Сбросить'
 								htmlType='reset'
 								type='clear'
-								onClick={() => {
-									setTempForm(props.nowForm);
-									props.onResetForm();
-								}}
+								onClick={handleReset}
 							/>
-							<Button
-								title='Применить'
-								htmlType='submit'
-								type='apply'
-								onClick={() => {
-									props.onApplyForm(tempForm);
-									setIsFormVisible(false);
-								}}
-							/>
+							<Button title='Применить' htmlType='submit' type='apply' />
 						</div>
 					</form>
 				</aside>
